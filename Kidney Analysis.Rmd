@@ -1,0 +1,72 @@
+---
+title: "KidneyDonationAnalysis"
+author: "Anjay Friedman"
+date: "11/9/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+getwd()
+setwd("/Users/anjayfriedman1/Downloads")
+kidneyData <- read.csv("Seth_Kidney_Data.csv", header = TRUE)
+library(ggplot2)
+
+
+```
+
+```{r}
+head(kidneyData)
+labels(kidneyData)
+dim(kidneyData)
+
+
+#explore how population relates to OPO.obsered.donation.rate.per.100.eligible.deaths
+
+ggplot(kidneyData, aes(x = Population, y = OPO.observed.donation.rate.per.100.eligible.deaths)) + geom_point()
+
+#model 
+popVersusRate <- lm( OPO.observed.donation.rate.per.100.eligible.deaths ~ Population , data = kidneyData)
+#formula: Rate per 100 = C + B*Population //equation we are estimating
+summary(popVersusRate)
+#R-squared is very low, so low chance of them being related 
+
+```
+
+Conclusion: It is not likely that there is a relationship between the population and donatation rate per 100 
+
+
+New Question: How does income affect organ donations?
+```{r}
+labels(kidneyData)
+```
+
+
+Other Question: How does patients on kidney list affect donations?
+```{r}
+#patients on kidney list versus donors per million
+ggplot(kidneyData, aes(y = Donors.per.million.population, x = Patients.on.list...kidney)) + geom_point()
+
+#model 
+listSizeVersusDperMillion <- lm( Donors.per.million.population ~ Patients.on.list...kidney , data = kidneyData)
+#formula: Rate per 100 = C + B*Population //equation we are estimating
+summary(listSizeVersusDperMillion)
+
+#patients on kidney list versus donors per 10,000 deaths
+ggplot(kidneyData, aes(y = Donors.per.10.000.deaths, x = Patients.on.list...kidney)) + geom_point()
+
+#model 
+listSizeVersusDper10 <- lm( Donors.per.10.000.deaths ~ Patients.on.list...kidney , data = kidneyData)
+#formula: Rate per 100 = C + B*Population //equation we are estimating
+summary(listSizeVersusDper10)
+#R-squared is very low, so low chance of them being related 
+```
+
+Both have very low R-squared values --> It appears they are not linked.
+This is interesting. I thought that if there were more people on the list, there would have been more donors due to:
+a. Increased demand, therefore, increased pressure to donate and increased awareness
+b. More people on list means more potential family donations 
+
